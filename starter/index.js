@@ -4,7 +4,6 @@ const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
-const htmlFile = require(".starter/index.html")
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
@@ -14,47 +13,112 @@ const render = require("./src/page-template.js");
 
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 
-const managerQuestions = [
-    {
-        type: "input",
-        name: "name",
-        message: "What is the manager's name?",
-    },
-    {
-        type: "input",
-        name: "id",
-        message: "What is the manager's ID?",
-    },
-    {
-        type: "input",
-        name: "email",
-        message: "What is the manager's email?",
-        validate: function(value) {
-            const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-            return valid || 'Please enter a valid email address.';
+const teamMembers = [];
+
+async function promptManeger() {
+    const managerQuestions = [
+        {
+            type: "input",
+            name: "name",
+            message: "What is the manager's name?",
         },
-    },
-    {
-        type: "input",
-        name: "officeNumber",
-        message: "What is the manager's office number?",
-    },
-]
+        {
+            type: "input",
+            name: "id",
+            message: "What is the manager's ID?",
+        },
+        {
+            type: "input",
+            name: "email",
+            message: "What is the manager's email address?",
+            validate: function(value) {
+                const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+                return valid || 'Please enter a valid email address.';
+            },
+        },
+        {
+            type: "input",
+            name: "officeNumber",
+            message: "What is the manager's office number?",
+        },
+    ] 
+
+    const answers = await inquirer.prompt(managerQuestions);
+    const manager = new Manager(answers.name, answers.id, answers.email, answers.officeNumber);
+    teamMembers.push(manager);
+    
+}
+
+async function promptEngineer() {
+    const engineerQuestions = [
+        {
+        type: 'input',
+        name: 'name',
+        message: "Enter the engineer's name:",
+        },
+        {
+        type: 'input',
+        name: 'id',
+        message: "Enter the engineer's employee ID:",
+        },
+        {
+        type: 'input',
+        name: 'email',
+        message: "Enter the engineer's email address:",
+        },
+        {
+        type: 'input',
+        name: 'github',
+        message: "Enter the engineer's GitHub username:",
+        },
+    ];
+
+    const answers = await inquirer.prompt(engineerQuestions);
+    const engineer = new Engineer(answers.name, answers.id, answers.email, answers.github);
+    teamMembers.push(engineer);
+}
+
+function showMenu() {
+
+}
 
 async function createManager() {
+    try {
+        const userResponse = await inquirer.prompt(managerQuestions);
 
+        const manager = new Manager(userResponse.name, userResponse.id, userResponse.email, userResponse.officeNumber);
+
+        employees.push(manager);
+
+    } catch (error) {
+        console.log(error);
+    }
+
+    await showMenu();
 }
 
-function addTeamMembers() {
-
-}
 
 function createEngineer() {
 
+    showMenu();
 }
 
 function createIntern() {
 
+    showMenu();
 }
 
-function renderHTML() {}
+function writeToFile() {
+    if(fs.existsSync(OUTPUT_DIR)) {
+        fs.writeFileSync(outputPath, render(employees));
+    } else {
+        fs.mkdirSync(OUTPUT_DIR);
+        fs.writeFileSync(outputPath, render(employees));
+    }
+}
+
+async function Main () { 
+
+    createManager();
+    showMenu();
+}       
