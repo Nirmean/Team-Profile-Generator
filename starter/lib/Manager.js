@@ -1,7 +1,7 @@
 // TODO: Write code to define and export the Manager class. HINT: This class should inherit from Employee.
 
 // Import the Employee class
-const Employee = require('./Employee');
+import { Employee } from './Employee.js';
 
 // Define the Manager class as a child of Employee
 class Manager extends Employee {
@@ -23,4 +23,4 @@ class Manager extends Employee {
 }
 
 // Export the Manager class
-module.exports = Manager;
+export { Manager };
