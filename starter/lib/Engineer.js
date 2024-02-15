@@ -1,7 +1,7 @@
 // TODO: Write code to define and export the Engineer class.  HINT: This class should inherit from Employee.
 
 // Import the Employee class
-const Employee = require('./Employee');
+import { Employee } from './Employee.js';
 
 // Define the Engineer class as a child of Employee
 class Engineer extends Employee {
