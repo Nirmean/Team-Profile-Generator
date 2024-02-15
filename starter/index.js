@@ -78,35 +78,35 @@ async function promptEngineer() {
     teamMembers.push(engineer);
 }
 
-function showMenu() {
+async function promptIntern() {
+    const internQuestions = [
+    {
+        type: 'input',
+        name: 'name',
+        message: "Enter the intern's name:",
+    },
+    {
+        type: 'input',
+        name: 'id',
+        message: "Enter the intern's employee ID:",
+    },
+    {
+        type: 'input',
+        name: 'email',
+        message: "Enter the intern's email address:",
+    },
+    {
+        type: 'input',
+        name: 'school',
+        message: "Enter the intern's school:",
+    },
+    ];
 
+    const answers = await inquirer.prompt(internQuestions);
+    const intern = new Intern(answers.name, answers.id, answers.email, answers.school);
+    teamMembers.push(intern);
 }
 
-async function createManager() {
-    try {
-        const userResponse = await inquirer.prompt(managerQuestions);
-
-        const manager = new Manager(userResponse.name, userResponse.id, userResponse.email, userResponse.officeNumber);
-
-        employees.push(manager);
-
-    } catch (error) {
-        console.log(error);
-    }
-
-    await showMenu();
-}
-
-
-function createEngineer() {
-
-    showMenu();
-}
-
-function createIntern() {
-
-    showMenu();
-}
 
 function writeToFile() {
     if(fs.existsSync(OUTPUT_DIR)) {
