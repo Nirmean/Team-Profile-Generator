@@ -117,8 +117,36 @@ function writeToFile() {
     }
 }
 
-async function Main () { 
+async function init() {
+    await promptManager();
 
-    createManager();
-    showMenu();
-}       
+    let userChoice;
+    do {
+        const menuQuestion = {
+            type: 'list',
+            name: 'choice',
+            message: 'What would you like to do?',
+            choices: ['Add an engineer', 'Add an intern', 'Finish building the team'],
+        };
+
+        const menuAnswer = await inquirer.prompt(menuQuestion);
+        userChoice = menuAnswer.choice;
+
+        if (userChoice === 'Add an engineer') {
+            await promptEngineer();
+        } else if (userChoice === 'Add an intern') {
+            await promptIntern();
+        }
+    } while (userChoice !== 'Finish building the team');
+
+    const outputHtml = render(teamMembers);
+
+    // Write HTML to the output file
+    const outputPath = path.join(__dirname, 'output', 'team.html');
+    fs.writeFileSync(outputPath, outputHtml);
+
+    console.log(`Team information has been written to ${outputPath}`);
+}
+
+// Run the application
+init();
