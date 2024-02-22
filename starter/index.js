@@ -4,12 +4,13 @@ import { Intern } from "./lib/Intern.js";
 import inquirer from "inquirer";
 import path from "path";
 import fs from "fs/promises";
+import { render } from "./src/page-template.js";
+
+const currentModuleUrl = new URL(import.meta.url);
+const __dirname = path.dirname(currentModuleUrl.pathname);
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
-
-import { render } from "./src/page-template.js";
-
 
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 
@@ -111,6 +112,7 @@ async function init() {
     await promptManager();
 
     let userChoice;
+
     do {
         const menuQuestion = {
             type: 'list',
@@ -132,10 +134,20 @@ async function init() {
     const outputHtml = render(teamMembers);
 
     // Write HTML to the output file
-    const outputPath = path.join(__dirname, 'output', 'team.html');
-    fs.writeFileSync(outputPath, outputHtml);
+    try {
+        await fs.mkdir(OUTPUT_DIR, { recursive: true });
+    } catch (err) {
+        console.error("Error creating output directory:", err);
+        return;
+    }
 
-    console.log(`Team information has been written to ${outputPath}`);
+    // Write HTML to the output file
+    try {
+        await fs.writeFile(outputPath, outputHtml, "utf-8");
+        console.log(`Team information has been written to ${outputPath}`);
+    } catch (err) {
+        console.error("Error writing to file:", err);
+    }
 }
 
 // Run the application
